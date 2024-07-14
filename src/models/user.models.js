@@ -25,11 +25,17 @@ const userSchema = new Schema({
         index: true,
     },
     avatar:{
-        type: String, //cloudinary url -> where images/videos are stored in cloud gives url
+        type: {
+                url: String,
+                public_id: String,
+        }, //cloudinary url -> where images/videos are stored in cloud gives url
         required: true
     },
     coverImage:{
-        type: String, //cloudinary url -> where images/videos are stored in cloud gives url
+        type: {
+                url: String,
+                public_id: String,
+        }, //cloudinary url -> where images/videos are stored in cloud gives url
     },
     watchHistory: [
         {
