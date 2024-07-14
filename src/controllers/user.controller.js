@@ -64,8 +64,14 @@ const registerUser =  asyncHandller(async (req, res)=>{
 
     const user = await User.create({
         fullname,
-        avatar: avatar.url || "",
-        coverImage: coverImage?.url || "",
+        avatar:{
+            public_id: avatar.public_id || "",
+            url: avatar.url || ""
+        },
+        coverImage:{
+            public_id: coverImage.public_id || "",
+            url: coverImage.url || ""
+        },
         email,
         password,
         username : username.toLowerCase()
@@ -277,34 +283,28 @@ const updateAccountDetails = asyncHandller(async (req, res) => {
 
 const updateAvatar = asyncHandller(async (req, res)=>{
 
-    //delete the existing avatar from cloudinary
-    const userForAvatar = await User.findById(req.user?._id)
-    const avatarUrl = userForAvatar.avatar
-    const publicId = avatarUrl.split("/").pop().split(".")[0]
-    await deleteFile(publicId, "image")
-
     //updating the new avatar
     const avatarPath = req.file?.path
     if(!avatarPath){
         throw new ApiError(400, "Avatar file is required")
     }
     const cloudinaryUrl = await uploadFile(avatarPath)
+    
+    const user = await User.findById(req.user?.id)
+    console.log(user)
+    const avatarToDelete = user.avatar.public_id
+    await deleteFile(avatarToDelete)
 
-    const user = await User.findByIdAndUpdate(
+    const updateUser = await User.findByIdAndUpdate(
         req.user?._id,
         {
-            $set:{
-                avatar: cloudinaryUrl?.url
+            $set: {
+                avatar: {
+                    public_id: cloudinaryUrl.public_id,
+                    url: cloudinaryUrl.url || "",
+                }
             }
-        },
-        {
-            new : true
-        }
-    ).select(
-        "-password -refreshToken"
-    )
-
-
+        } )
     fs.unlink(avatarPath, (err)=>{
         if(err) throw new ApiError(500, "Could not remove fiel form local storage")
         console.log(`${avatarPath} deleted`)
@@ -312,7 +312,7 @@ const updateAvatar = asyncHandller(async (req, res)=>{
     res
     .status(200)
     .json(
-        new ApiResponse({user}, 200, "User created successfully")
+        new ApiResponse({updateUser}, 200, "User created successfully")
     )
 
 })
