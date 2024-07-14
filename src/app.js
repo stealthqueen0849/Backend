@@ -26,8 +26,14 @@ app.use(cookieParser())
 
 import userRouter from "./routes/users.routes.js"
 import videoRouter from "./routes/video.routes.js"
+import commentRouter from "./routes/comment.routes.js"
+
+
+
 //routes declaratiom
-app.use("/api/v1/users", userRouter) // => https://localhost:8000/api/v1/users/register
-app.use("/api/v1/video", videoRouter) // => https://localhost:8000/api/v1/video/
+app.use(`/api/v1/users`, userRouter) // => https://localhost:8000/api/v1/users
+app.use(`/api/v1/video`, videoRouter) // => https://localhost:8000/api/v1/video/
+app.use(`/api/v1/comment`, commentRouter)
+
 
 export default app; //OR export { app }
