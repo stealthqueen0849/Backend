@@ -14,6 +14,7 @@ const uploadFile = async (pathFile) => {
             resource_type: "auto"
         })
         console.log(`File uploaded on cloudinary`)
+        console.log(result)
         return result;
     }
     catch (error){
@@ -29,7 +30,6 @@ const deleteFile = async (publicId, resource_type)=>{
     }  
 
     try{
-        if(!publicId) return null
         const result = await cloudinary.uploader.destroy(publicId, {
             resource_type: resource_type
         })
