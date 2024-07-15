@@ -163,7 +163,6 @@ const getLikedVideos = asyncHandler(async (req, res) => {
                     },
                     {
                         $project: {
-                            _id: 0,
                             owner: 1,
                             title: 1,
                             "videoFile.url": 1,
@@ -193,8 +192,6 @@ const getLikedVideos = asyncHandler(async (req, res) => {
         }
     ])
     if(!likedVideos) throw new ApiError(500, "Error while getting the liked videos")
-    
-    console.log(likedVideos)
 
     res
     .status(200)
