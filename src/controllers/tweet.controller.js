@@ -1,4 +1,4 @@
-import { isValidObjectId } from "mongoose";
+import mongoose, { isValidObjectId } from "mongoose";
 import { Tweet } from "../models/tweet.model.js";
 import { ApiError } from "../utils/ApiError.js";
 import ApiResponse from "../utils/ApiResponse.js";
@@ -24,8 +24,55 @@ const createTweet = asyncHandler(async (req, res) => {
     )
 })
 
+// get user tweets
 const getUserTweets = asyncHandler(async (req, res) => {
-    // TODO: get user tweets
+    const tweets = await Tweet.aggregate([
+        {
+            $match: {
+                owner: new mongoose.Types.ObjectId(req.user?._id),
+            }
+        },
+        {
+
+            $lookup: {
+                from: "users",
+                localField: "owner",
+                foreignField: "_id",
+                as: "owner",
+                pipeline: [
+                    {
+                        $project: {
+                            "avatar.url": 1,
+                            username: 1,
+                            _id: 0
+                        }
+                    },
+                ]
+            }
+        },
+        {
+            $addFields: {
+                owner: {
+                    $arrayElemAt: ["$owner", 0],
+                }
+            }
+        },
+        {
+            $project: {
+                content: 1,
+                owner: 1,
+                _id: 0,
+            }
+        }
+    ])
+
+    if(!tweets) throw new ApiError(400, "couldnt get tweets")
+    
+    res
+    .status(200)
+    .json(
+        new ApiResponse(tweets, 200, "got all the tweets")
+    )
 })
 
 // update tweet
