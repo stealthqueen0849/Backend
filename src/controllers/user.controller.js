@@ -69,8 +69,8 @@ const registerUser =  asyncHandller(async (req, res)=>{
             url: avatar.url || ""
         },
         coverImage:{
-            public_id: coverImage.public_id || "",
-            url: coverImage.url || ""
+            public_id: coverImage?.public_id || "",
+            url: coverImage?.url || ""
         },
         email,
         password,
@@ -87,6 +87,7 @@ const registerUser =  asyncHandller(async (req, res)=>{
         if(err) throw new ApiError(500, "Unable to deleted file form loca storage")
         console.log(`${avatarPath} deleted`)
     })
+    
     if(coverImage){
         fs.unlink(coverImagePath , (err)=>{
             if(err) throw new ApiError(500, "Unable to deleted file form loca storage")
