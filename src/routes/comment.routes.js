@@ -4,7 +4,6 @@ import verifyJWT from "../middlewares/auth.middleware.js";
 
 const router = Router()
 
-
 router.route("/").get(getVideoComments)
 router.route("/:videoId").post( verifyJWT, addComment )
 router.route("/:commentId").patch(verifyJWT, updateComment)
