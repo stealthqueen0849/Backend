@@ -6,7 +6,6 @@ import ApiResponse from "../utils/ApiResponse.js";
 import jwt from "jsonwebtoken";
 import mongoose from "mongoose";
 import fs from 'fs'
-import { subscribe } from "diagnostics_channel";
 
 const generateAccessTokenAndRefreshToken = async (userId)=>{
 

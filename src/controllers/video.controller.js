@@ -72,7 +72,7 @@ const publishAVideo = asyncHandler(async (req, res) => {
 const getVideoById = asyncHandler(async (req, res) => {
 
     const {videoId} = req.params
-    console.log(videoId)
+
     if(!isValidObjectId(videoId)){
         throw new ApiError(400, "Please send valid video Id")
     }
@@ -165,27 +165,6 @@ const getVideoById = asyncHandler(async (req, res) => {
     //************************************************************//
     //make viewers set as well in the db to count the user uniquely
     //************************************************************//
-    await Video.findByIdAndUpdate(
-        video[0]._id,
-        {
-            $inc:{
-                views: 1
-            }
-        },
-        { new: true }
-    )
-
-    await User.findByIdAndUpdate(
-        req.user?._id,
-        {
-            $addToSet:{
-                watchHistory: videoId
-            }
-        },
-        { new: true }
-    ).select(
-        "-password -refreshToken"
-    )
     
     res
     .status(200)
@@ -282,16 +261,10 @@ const deleteVideo = asyncHandler(async (req, res) => {
     )
 })
 
-const togglePublishStatus = asyncHandler(async (req, res) => {
-    const { videoId } = req.params
-
-})
-
 export {
     getAllVideos,
     publishAVideo,
     getVideoById,
     updateVideo,
     deleteVideo,
-    togglePublishStatus
 }

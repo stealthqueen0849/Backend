@@ -4,7 +4,7 @@ import { ApiError } from "../utils/ApiError.js"
 import asyncHandler from "../utils/asyncHandler.js"
 import mongoose, { isValidObjectId } from "mongoose"
 
-
+// controller to toggle subscription
 const toggleSubscription = asyncHandler(async (req, res) => {
     const {channelId} = req.params
     // TODO: toggle subscription
